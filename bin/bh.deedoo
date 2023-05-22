@@ -1,0 +1,14 @@
+#!/bin/bash
+echo "To start server:"
+echo "    bh.deedoo.serve"
+echo
+echo "To answer a deedoo:"
+echo "    bh.deedoo.answer ANSWER"
+echo
+echo "To shutdown a currently running server, press enter three times"
+read
+read
+read
+echo crating file ~/die. 
+echo this should shutdown any errant servers.
+echo "#$0" > ~/die

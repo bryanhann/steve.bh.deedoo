@@ -8,7 +8,7 @@ import deedoo.stoppers as SS
 import deedoo.util as UTIL
 
 ALARM_LIST = []
-ANNOUNCE_LIST = []
+DING_LIST = []
 
 def run_server(DEBUG=False):
     SS.init()
@@ -33,14 +33,14 @@ class Now:
         self.second = dt.second
         self.show = self.hhmm
         self.alarm_sleep = 5
-        self.f_announce = self.dt.minute % 5 == 0
-        self.f_alarm = self.dt.minute % 15 == 0
+        self._ding = self.dt.minute % 5 == 0
+        self._alarm = self.dt.minute % 15 == 0
 
         if self.DEBUG:
             self.show=self.hhmmss
             self.alarm_sleep=1
-            self.f_announce = self.dt.second % 5 == 0
-            self.f_alarm = self.dt.second % 15 == 0
+            self._ding = self.dt.second % 5 == 0
+            self._alarm = self.dt.second % 15 == 0
 
         self.stop=UTIL.hash(self.show)
         self.stopfile = SS.file4stop(self.stop)
@@ -54,19 +54,19 @@ class Now:
 
     def main(self):
         self.debug_report()
-        self.announce()
+        self.ding()
         self.alarm()
 
-    def announce(self):
-        if not self.f_announce:
+    def ding(self):
+        if not self._ding:
             return
-        if self.stop in ANNOUNCE_LIST:
+        if self.stop in DING_LIST:
             return
-        ANNOUNCE_LIST.append(self.stop)
+        DING_LIST.append(self.stop)
         UTIL.say(f"The time is {self._phone()}")
 
     def alarm(self):
-        if not self.f_alarm:
+        if not self._alarm:
             return
         if self.stop in ALARM_LIST:
             return
@@ -75,18 +75,19 @@ class Now:
             if SS.killed():
                 return
             if SS.found(self.stop):
+                UTIL.say( f'stopped' )
                 return
             UTIL.say( str(count) )
             UTIL.sayspell(self.stop)
             time.sleep(self.alarm_sleep)
 
-    def debug_report(self):
-        if not self.DEBUG:
-            return
-        a = self.hhmmss
-        b = self.stop
-        c = self.f_announce
-        d = self.f_alarm
-        e = str(self.stopfile)
-        UTIL.errout( f"{a} {b} {c} {d} {e}" )
+    def __repr__(s):
+        b = f"{s.stop=}"
+        c = f"{s._ding=}"
+        d = f"{s._alarm=}"
+        t = s.dt.strftime('%H:%M:%S')
+        return f"{t} {b} {c} {d}"
 
+    def debug_report(self):
+        if self.DEBUG:
+            UTIL.errout(str(self)+'    ')

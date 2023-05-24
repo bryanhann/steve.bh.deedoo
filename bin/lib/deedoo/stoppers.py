@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import os
+import deedoo.util
 
 STOPPERS=Path('/TMP/deedoo.stoppers')
 KILL_PATH   = Path.home()/'die'
@@ -34,3 +35,14 @@ def killed():
     if KILL_PATH.exists(): exit("SERVER KILLED")
     if not KILL_DEVICE.exists(): exit("SERVER KILLED")
     return False
+
+def stoppers():
+    acc={}
+    for hh in range(0,24):
+        hh=str(hh+100)[-2:]
+        for mm in range(0,60,15):
+            mm=str(mm+100)[-2:]
+            hhmm=hh+mm
+            stop = deedoo.util.hash(hhmm)
+            acc[hhmm] = stop
+    return acc

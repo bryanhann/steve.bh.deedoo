@@ -15,3 +15,4 @@ def errout(text):
     back = '\b'*(len(text)+10)
     sys.stderr.write(text + back)
     sys.stderr.flush()
+

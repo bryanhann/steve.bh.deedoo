@@ -1,14 +1,60 @@
-#!/bin/bash
-echo "To start server:"
-echo "    bh.deedoo.serve"
-echo
-echo "To answer a deedoo:"
-echo "    bh.deedoo.answer ANSWER"
-echo
-echo "To shutdown a currently running server, press enter three times"
-read
-read
-read
-echo crating file ~/die. 
-echo this should shutdown any errant servers.
-echo "#$0" > ~/die
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.append( str(Path(__file__).absolute().parent/'lib'))
+import deedoo.stoppers as STOPPERS
+import deedoo.server
+
+NAME=Path(__file__).name
+
+def bold(text): 
+    return "\033[1m" + text + "\033[0m"
+
+def cmd_kill(args):
+    """Kill a running server"""
+
+    STOPPERS.KILL_PATH.touch()
+
+def cmd_serve(arglist):
+    """Run the server [& to run in backgound]"""
+    deedoo.server.run_server( DEBUG = '--debug' in arglist)
+
+def cmd_answer(arglist):
+    """Answer a deedoo"""
+    STOPPERS.create(arglist[0])
+
+def cmd_stoppers(args):
+    """Show all stoppers [--time to add time]"""
+    items = sorted(STOPPERS.stoppers().items())
+    for hhmm,stop in items:
+        if '--time' in args:
+            print(hhmm,stop)
+        else:
+            print(stop)
+
+CMDS={}
+CMDS[ 'serve' ] = cmd_serve
+CMDS[ 'answer' ] = cmd_answer
+CMDS[ 'stoppers' ] = cmd_stoppers
+CMDS[ 'kill' ] = cmd_kill
+
+def usage():
+    print( f"The [{bold(NAME)}] command suite." )
+    print()
+    print( 'USAGE:' )
+    for cmd, fn in CMDS.items():
+        doc = fn.__doc__
+        doc = doc.split('\n')[0]
+        print( f"    {bold(NAME)} {bold(cmd)}" )
+        print( f"        -- {doc}" )
+
+def main(args):
+    cmd = args.pop(0)
+    if cmd in CMDS:
+        CMDS[cmd](args)
+    else:
+        usage()
+
+if __name__ == '__main__':
+    main(sys.argv[1:]+['']*5)

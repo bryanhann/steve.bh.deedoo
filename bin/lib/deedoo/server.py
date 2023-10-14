@@ -7,6 +7,10 @@ from pathlib import Path
 import deedoo.stoppers as SS
 import deedoo.util as UTIL
 
+# How many seconds to wait between the deedoo calls
+# For any given alarm?
+ALARM_SLEEP = 60
+
 ALARMS = []
 DINGS = []
 
@@ -45,7 +49,7 @@ class Now:
         self.hh = dt.strftime("%H")
         self.mm = dt.strftime("%M")
         self.show = dt.strftime("%H%M")
-        self._alarm_sleep = 5
+        self._alarm_sleep = ALARM_SLEEP
         self._ding = self.dt.minute % 5 == 0
         self._alarm = self.dt.minute % 15 == 0
 

@@ -5,7 +5,7 @@ import deedoo.util
 
 STOPPERS=Path('/TMP/deedoo.stoppers')
 KILL_PATH   = Path.home()/'die'
-KILL_DEVICE = Path("/Volumes/SeagateBlue")
+#KILL_DEVICE = Path("/Volumes/SeagateBlue")
 
 
 def create(stop):
@@ -32,8 +32,10 @@ def init():
         os.remove(str(KILL_PATH))
 
 def killed():
-    if KILL_PATH.exists(): exit("SERVER KILLED")
-    if not KILL_DEVICE.exists(): exit("SERVER KILLED")
+    if KILL_PATH.exists(): exit("SERVER KILLED1")
+ #   if not KILL_DEVICE.exists():
+ #       print( 555, KILL_DEVICE )
+ #       exit("SERVER KILLED2")
     return False
 
 def stoppers():
